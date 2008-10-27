@@ -26,6 +26,6 @@ main() {
 	volatile int t = ADCH << 8;
 	t |= ADCL;
 	printout(t);
-	for (uint32_t k = 0; k < 1000000UL; ++k) { __asm__ ( "nop" ); }
+	for (uint32_t k = 0; k < 100000UL; ++k) { __asm__ ( "nop" ); }
     }
 }
