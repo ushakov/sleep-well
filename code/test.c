@@ -22,10 +22,12 @@ main() {
     ADCSRA = 0x87;  // 1000 0111
     while(1) {
 	ADCSRA |= 0x40;
-	while (ADCSRA & 0x40);
-	volatile int t = ADCH << 8;
+	int c = 0;
+	while (ADCSRA & 0x40) c++;
+	int t = ADCH << 8;
 	t |= ADCL;
 	printout(t);
+	uart_write_byte('>'); printout(c);
 	for (uint32_t k = 0; k < 100000UL; ++k) { __asm__ ( "nop" ); }
     }
 }
