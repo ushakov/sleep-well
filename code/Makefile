@@ -14,8 +14,8 @@ SIZE	= avr-size
 INCDIR	= .
 FORMAT = ihex	
 
-CPFLAGS += -mmcu=$(MCU)
-ASFLAGS += -mmcu=$(MCU)
+CPFLAGS += -mmcu=$(MCU) -DF_CPU=7372800UL
+ASFLAGS += -mmcu=$(MCU) -DF_CPU=7372800UL
 
 %.o : %.c 
 	$(CC) -c $(CPFLAGS) -I$(INCDIR) $< -o $@
@@ -42,16 +42,17 @@ ASFLAGS += -mmcu=$(MCU)
 # Description of source files starts here
 
 TARGETS = test
+ALL_SCR = test.c uart.c
 
 default: test
 
 all: $(TARGETS)
 
-test.elf: test.c
+test.elf: test.o uart.o
 
 $(TARGETS): %: %.elf %.bin %.hex %.eep
 	$(SIZE) $*.elf
-	git-commit -e -a -m "Autocommit when making $@"
+	git commit -e -a -m "Autocommit when making $@"
 	@echo $< done
 
 clean:
