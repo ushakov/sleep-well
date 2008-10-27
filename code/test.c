@@ -23,7 +23,7 @@ main() {
     SFIOR &= 0x1f; // 0001 1111
     while(1) {
 	int c = 0;
-	while (ADCSRA & 0x10) c++;
+	while (ADCSRA & 0x10 == 0) c++;
 	ADCSRA |= 0x10;
 	int t = ADCH << 8;
 	t |= ADCL;
