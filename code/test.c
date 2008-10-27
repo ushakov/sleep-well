@@ -19,11 +19,12 @@ main() {
     DDRA = 0;
     PORTA = 0;
     ADMUX = 0xc7; // 1100 0111
-    ADCSRA = 0x87;  // 1000 0111
+    ADCSRA = 0xe7;  // 1110 0111
+    SFIOR &= 0x1f; // 0001 1111
     while(1) {
-	ADCSRA |= 0x40;
 	int c = 0;
-	while (ADCSRA & 0x40) c++;
+	while (ADCSRA & 0x10) c++;
+	ADCSRA |= 0x10;
 	int t = ADCH << 8;
 	t |= ADCL;
 	printout(t);
