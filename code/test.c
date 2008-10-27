@@ -21,13 +21,10 @@ main() {
     ADMUX = 0xc7; // 1100 0111
     ADCSRA = 0x87;  // 1000 0111
     while(1) {
-	int c = 0;
 	ADCSRA |= 0x40;
-	while (ADCSRA & 0x40) c++;
+	while (ADCSRA & 0x40);
 	int t = ADCL;
 	t |= ADCH  << 8;
 	printout(t);
-	uart_write_byte('>'); printout(c);
-	for (uint32_t k = 0; k < 100000UL; ++k) { __asm__ ( "nop" ); }
     }
 }
