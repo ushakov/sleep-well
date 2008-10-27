@@ -52,7 +52,7 @@ test.elf: test.o uart.o
 
 $(TARGETS): %: %.elf %.bin %.hex %.eep
 	$(SIZE) $*.elf
-	git commit -e -a -m "Autocommit when making $@"
+	-git commit -e -a
 	@echo $< done
 
 clean:
