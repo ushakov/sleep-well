@@ -18,7 +18,7 @@ main() {
     uart_set_baud_rate(115200);
     DDRA = 0;
     PORTA = 0;
-    ADMUX = 0xc7; // 1100 0111
+    ADMUX = 0xc9; // 1100 1001
     ADCSRA = 0x87;  // 1000 0111
     while(1) {
 	ADCSRA |= 0x40;
