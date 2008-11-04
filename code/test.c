@@ -19,9 +19,9 @@ main() {
     DDRA = 0;
     PORTA = 0;
 //    ADMUX = 0xc1; // 1100 0001, single +ADC1
-    ADMUX = 0xd0; // 1101 0000, diff +ADC0, -ADC1, x1
+//    ADMUX = 0xd0; // 1101 0000, diff +ADC0, -ADC1, x1
 //    ADMUX = 0xc0; // 1100 0000, single +ADC0
-//    ADMUX = 0xc9; // 1100 1001, diff -ADC0, +ADC1, x10
+    ADMUX = 0xc9; // 1100 1001, diff -ADC0, +ADC1, x10
     ADCSRA = 0x87;  // 1000 0111
     while(1) {
 	ADCSRA |= 0x40;
