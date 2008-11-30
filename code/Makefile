@@ -1,4 +1,4 @@
-MCU = atmega16
+MCU = attiny44
 # AVRLIB = /home/ushakov/devel/embedded/avrlib
 
 ASFLAGS = -Wa, -gstabs
