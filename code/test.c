@@ -9,9 +9,9 @@
 #define PORT_TR PORTA
 #define BIT_TR PORTA1
 
-#define DDR_RADIO DDRA
-#define PORT_RADIO PORTA
-#define BIT_RADIO PORTA6
+#define DDR_RADIO DDRB
+#define PORT_RADIO PORTB
+#define BIT_RADIO PORTB2
 
 void init() {
     DDR_LED |= (1 << BIT_LED);
