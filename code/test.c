@@ -15,7 +15,7 @@
 
 void init() {
     DDR_LED |= (1 << BIT_LED);
-    PORT_LED |= (1 << BIT_LED);
+    PORT_LED &= ~(1 << BIT_LED);
 
     DDR_RADIO |= (1 << BIT_RADIO);
 }
