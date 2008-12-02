@@ -14,8 +14,8 @@ SIZE	= avr-size
 INCDIR	= .
 FORMAT = ihex	
 
-CPFLAGS += -mmcu=$(MCU) -DF_CPU=7372800UL
-ASFLAGS += -mmcu=$(MCU) -DF_CPU=7372800UL
+CPFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
+ASFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
 
 %.o : %.c 
 	$(CC) -c $(CPFLAGS) -I$(INCDIR) $< -o $@

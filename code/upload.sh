@@ -6,6 +6,4 @@ else
    name=$1
 fi
 
-sudo uisp -dprog=bsd --erase
-sudo uisp -dprog=bsd --upload if=$name.hex
-sudo uisp -dprog=bsd --verify if=$name.hex
+sudo avrdude -c bsd -p t44 -U flash:w:$name.hex
