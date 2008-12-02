@@ -11,7 +11,7 @@
 
 #define DDR_RADIO DDRA
 #define PORT_RADIO PORTA
-#define BIT_RADIO PORTA7
+#define BIT_RADIO PORTA6
 
 void init() {
     DDR_LED |= (1 << BIT_LED);
