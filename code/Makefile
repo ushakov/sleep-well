@@ -42,13 +42,13 @@ ASFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
 # Description of source files starts here
 
 TARGETS = test
-ALL_SRC = test.c uart.c delay.c
+ALL_SRC = test.c uart.c delay.c manchester.c
 
 default: test
 
 all: $(TARGETS)
 
-test.elf: test.o delay.o
+test.elf: test.o delay.o manchester.o
 
 $(TARGETS): %: %.elf %.bin %.hex %.eep
 	$(SIZE) $*.elf

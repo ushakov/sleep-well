@@ -1,17 +1,7 @@
 #include <avr/io.h>
 #include "delay.h"
 
-#define DDR_LED DDRA
-#define PORT_LED PORTA
-#define BIT_LED PORTA0
-
-#define DDR_TR DDRA
-#define PORT_TR PORTA
-#define BIT_TR PORTA1
-
-#define DDR_RADIO DDRA
-#define PORT_RADIO PORTA
-#define BIT_RADIO PORTA7
+#include "config.h"
 
 void init() {
     DDR_LED |= (1 << BIT_LED);
@@ -20,24 +10,26 @@ void init() {
     DDR_RADIO |= (1 << BIT_RADIO);
 }
 
+void init_adc() {
+    ADMUX = 0x81; // 1000 0001, single +ADC1
+    ADCSRA = 0x86;  // 1000 0110
+    ADCSRB = 0x0;
+    DIDR0 = ~0x2; // disable digital input on ADC1
+}
+
 void main() {
     init();
+    // init_adc();
+    
+    // Turn on LED
+    // PORT_LED &= ~(1 << BIT_LED);
+
     while (1) {
-	delay_ms(5);
-	PORT_RADIO |= (1 << BIT_RADIO);
-	delay_ms(5);
-	PORT_RADIO &= ~(1 << BIT_RADIO);
-    }
-//    ADMUX = 0xc1; // 1100 0001, single +ADC1
-//    ADMUX = 0xd0; // 1101 0000, diff +ADC0, -ADC1, x1
-//    ADMUX = 0xc0; // 1100 0000, single +ADC0
-//    ADMUX = 0xc9; // 1100 1001, diff -ADC0, +ADC1, x10
-//    ADCSRA = 0x87;  // 1000 0111
-/*     while(1) { */
-/* 	ADCSRA |= 0x40; */
+/*  	ADCSRA |= 0x40; */
 /* 	while (ADCSRA & 0x40); */
 /* 	int t = ADCL; */
-/* 	t |= ADCH  << 8; */
-/* 	printout(t); */
-/*     } */
+/* 	t |= ADCH << 8; */
+	int t = 57;
+	manchester_send(t);
+    }
 }
