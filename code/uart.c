@@ -8,10 +8,11 @@ static int errors;
 #define BUFLEN 16
 #define BUFLENMASK 15
 static uint8_t buffer[BUFLEN];
-static uint8_t volatile bstart, blen;
+static uint8_t volatile bstart;
+static uint8_t volatile blen;
 
 ISR(USART_RXC_vect) {
-    char data = UDR;
+    uint8_t data = UDR;
     uint8_t place = (bstart + blen) & BUFLENMASK;
     buffer[place] = data;
     blen++;

@@ -4,7 +4,7 @@
 #include "manchester.h"
 
 #define BUFLEN 100
-uint8_t buffer[BUFLEN];
+static uint8_t buffer[BUFLEN];
 
 void main() {
     manchester_init();
