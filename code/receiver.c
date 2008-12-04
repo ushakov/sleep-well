@@ -12,8 +12,8 @@ void main() {
 //	buffer[i] = manchester_wait_bit();
     }
     uart_init();
+    uart_set_baud_rate(19200);
     while(1) {
-	uart_set_baud_rate(19200);
 	for(int i = 0; i < BUFLEN; ++i) {
 	    uart_write_byte(buffer[i]);
 	}

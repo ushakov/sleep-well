@@ -19,11 +19,13 @@ ISR(USART_RXC_vect) {
 }
 
 void uart_init() {
+    DDRD &= ~(1 << PIND0);
+    DDRD |= (1 << PIND1);
     UCSRA = 0; //(1 << U2X);
     UCSRB = (1 << RXEN ) | (1 << TXEN) | (1 << RXCIE);
     UCSRC = (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0); // | (1 << UPM1) | (1 << UPM0) 
     UBRRH = 0;
-    UBRRL = 12;
+    UBRRL = 25;
     bstart = 0;
     blen = 0;
     errors = 0;
@@ -32,7 +34,7 @@ void uart_init() {
 }
 
 void uart_off() {
-    UCSRA = 0; //(1 << U2X);
+    UCSRA = 0;
     UCSRB = 0;
     UCSRC = 0;
     sei();
