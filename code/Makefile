@@ -1,6 +1,3 @@
-MCU = attiny44
-# AVRLIB = /home/ushakov/devel/embedded/avrlib
-
 ASFLAGS = -Wa, -gstabs
 CPFLAGS	= -g -Os -Wall -Wa,-ahlms=$(<:.c=.lst) -std=c99 -ffunction-sections -fdata-sections # -dr -finline-functions-called-once 
 
@@ -14,8 +11,11 @@ SIZE	= avr-size
 INCDIR	= .
 FORMAT = ihex	
 
-CPFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
-ASFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
+SENSOR_CPFLAGS += -mmcu=attiny44 -DF_CPU=8000000UL -DSENSOR
+SENSOR_ASFLAGS += -mmcu=attiny44 -DF_CPU=8000000UL
+
+RECEIVER_CPFLAGS += -mmcu=atmega8 -DF_CPU=8000000UL
+RECEIVER_ASFLAGS += -mmcu=atmega8 -DF_CPU=8000000UL
 
 %.o : %.c 
 	$(CC) -c $(CPFLAGS) -I$(INCDIR) $< -o $@
@@ -48,11 +48,13 @@ default: all
 
 all: $(TARGETS)
 
-sensor: CPFLAGS += -DSENSOR
-
+sensor: CPFLAGS += $(SENSOR_CPFLAGS)
+sensor: ASFLAGS += $(SENSOR_ASFLAGS)
 sensor.elf: sensor.o delay.o manchester.o
 
-receiver.elf: receiver.o delay.o manchester.o
+receiver: CPFLAGS += $(RECEIVER_CPFLAGS)
+receiver: ASFLAGS += $(RECEIVER_ASFLAGS)
+receiver.elf: receiver.o delay.o manchester.o uart.o
 
 $(TARGETS): %: %.elf %.bin %.hex %.eep
 	$(SIZE) $*.elf
