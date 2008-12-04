@@ -16,11 +16,11 @@ void init_adc() {
 
 void main() {
     init();
+    manchester_init();
     // init_adc();
     
     // Turn on LED
     // PORT_LED &= ~(1 << BIT_LED);
-
     while (1) {
 /*  	ADCSRA |= 0x40; */
 /* 	while (ADCSRA & 0x40); */
