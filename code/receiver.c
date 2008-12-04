@@ -15,7 +15,7 @@ void main() {
     uart_init();
     uart_set_baud_rate(19200);
     for(int i = 0; i < BUFLEN; ++i) {
-	uart_write_byte(buffer[i]);
+	uart_write_byte('0'+buffer[i]);
     }
     uart_write_byte('\r');
     uart_write_byte('\n');
