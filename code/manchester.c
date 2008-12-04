@@ -54,7 +54,6 @@ int manchester_wait_bit() {
 // Send 10-bit number in Manchester code.
 void manchester_send(int t) {
     int mask = 0x200;
-    int p = 0;
     manchester_send_bit(1);
     manchester_send_bit(1);
     manchester_send_bit(1);
