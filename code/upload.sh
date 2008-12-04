@@ -6,4 +6,9 @@ else
    name=$1
 fi
 
-sudo avrdude -c bsd -p t44 -U flash:w:$name.hex
+arch=t44
+if [ "$1" == "receiver" ]; then
+  arch=atmega16
+fi
+
+sudo avrdude -c bsd -p $arch -U flash:w:$name.hex
