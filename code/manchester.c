@@ -3,6 +3,15 @@
 
 #include "config.h"
 
+void manchester_init() {
+#ifdef SENSOR
+    DDR_RADIO |= (1 << BIT_RADIO);
+#else  // SENSOR
+    DDR_RADIO &= ~(1 << BIT_RADIO);
+    PORT_RADIO &= ~(1 << BIT_RADIO);
+#endif
+}
+
 // in microseconds
 #define HALF_BIT 250
 void manchester_send_bit(int b) {
@@ -16,30 +25,6 @@ void manchester_send_bit(int b) {
 	delay_us(HALF_BIT);
 	PORT_RADIO &= ~(1 << BIT_RADIO);
 	delay_us(HALF_BIT);
-    }
-}
-
-// Send 10-bit number in Manchester code.
-void manchester_send(int t) {
-    int mask = 0x200;
-    int p = 0;
-    manchester_send_bit(1);
-    manchester_send_bit(1);
-    manchester_send_bit(1);
-    int ones = 0;
-    for (int i = 0; i < 10; ++i) {
-	int bit =  !! (t & mask);
-	manchester_send_bit(bit);
-	mask >>= 1;
-	if (bit == 1) {
-	    ones ++;
-	} else {
-	    ones = 0;
-	}
-	if (ones == 2) {
-	    manchester_send_bit(0);
-	    ones = 0;
-	}
     }
 }
 
@@ -64,6 +49,30 @@ int manchester_wait_bit() {
 	}
     }
     return expected_second;
+}
+
+// Send 10-bit number in Manchester code.
+void manchester_send(int t) {
+    int mask = 0x200;
+    int p = 0;
+    manchester_send_bit(1);
+    manchester_send_bit(1);
+    manchester_send_bit(1);
+    int ones = 0;
+    for (int i = 0; i < 10; ++i) {
+	int bit =  !! (t & mask);
+	manchester_send_bit(bit);
+	mask >>= 1;
+	if (bit == 1) {
+	    ones ++;
+	} else {
+	    ones = 0;
+	}
+	if (ones == 2) {
+	    manchester_send_bit(0);
+	    ones = 0;
+	}
+    }
 }
 
 int manchester_try_read() {

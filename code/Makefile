@@ -2,7 +2,7 @@ MCU = attiny44
 # AVRLIB = /home/ushakov/devel/embedded/avrlib
 
 ASFLAGS = -Wa, -gstabs
-CPFLAGS	= -dr -g -Os -Wall -Wa,-ahlms=$(<:.c=.lst) -std=c99 -ffunction-sections -fdata-sections # -finline-functions-called-once 
+CPFLAGS	= -g -Os -Wall -Wa,-ahlms=$(<:.c=.lst) -std=c99 -ffunction-sections -fdata-sections # -dr -finline-functions-called-once 
 
 CC	= avr-gcc
 AS	= avr-gcc -x assembler-with-cpp	
@@ -41,14 +41,18 @@ ASFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
 #################################################################
 # Description of source files starts here
 
-TARGETS = test
-ALL_SRC = test.c uart.c delay.c manchester.c
+TARGETS = sensor receiver
+ALL_SRC = sensor.c uart.c delay.c manchester.c receiver.c
 
-default: test
+default: all
 
 all: $(TARGETS)
 
-test.elf: test.o delay.o manchester.o
+sensor: CPFLAGS += -DSENSOR
+
+sensor.elf: sensor.o delay.o manchester.o
+
+receiver.elf: receiver.o delay.o manchester.o
 
 $(TARGETS): %: %.elf %.bin %.hex %.eep
 	$(SIZE) $*.elf
