@@ -58,7 +58,7 @@ receiver.elf: receiver.o delay.o manchester.o uart.o
 
 $(TARGETS): %: %.elf %.bin %.hex %.eep
 	$(SIZE) $*.elf
-	-git commit -e -a
+	-git commit -e -a -uno
 	@echo $< done
 
 clean:
