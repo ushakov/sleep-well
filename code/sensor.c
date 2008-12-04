@@ -18,15 +18,14 @@ void main() {
     init();
     manchester_init();
     // init_adc();
-    
-    // Turn on LED
-    // PORT_LED &= ~(1 << BIT_LED);
     while (1) {
 /*  	ADCSRA |= 0x40; */
 /* 	while (ADCSRA & 0x40); */
 /* 	int t = ADCL; */
 /* 	t |= ADCH << 8; */
-	int t = 57;
-	manchester_send(t);
+//	int t = 57;
+//	manchester_send(t);
+	PORT_RADIO |= (1 << BIT_RADIO);
+	PORT_RADIO &= ~(1 << BIT_RADIO);
     }
 }
