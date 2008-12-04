@@ -9,7 +9,7 @@ uint8_t buffer[BUFLEN];
 void main() {
     manchester_init();
     for (int i = 0; i < BUFLEN; ++i) {
-	buffer[i] = manchester_wait_bit();
+//	buffer[i] = manchester_wait_bit();
     }
     uart_init();
     while(1) {
