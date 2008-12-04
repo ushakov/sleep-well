@@ -29,7 +29,7 @@ void uart_init() {
     bstart = 0;
     blen = 0;
     errors = 0;
-    PIND |= (1 << PIND0);
+//    PIND |= (1 << PIND0);
     sei();
 }
 
