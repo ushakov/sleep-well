@@ -6,7 +6,7 @@
 static int errors;
 
 #define BUFLEN 16
-#define BUFLENMASK 0x15
+#define BUFLENMASK 15
 static uint8_t buffer[BUFLEN];
 static uint8_t volatile bstart, blen;
 
