@@ -36,13 +36,16 @@ int manchester_wait_bit() {
     do {
 	first_part = 0;
 	for(int i = 0; i < 10; ++i) {
-	    first_part += !! (PIN_RADIO & (1 << BIT_RADIO));
+	    if (PIN_RADIO & (1 << BIT_RADIO)) {
+		first_part ++;
+	    }
 	}
     } while (first_part > 2 && first_part < 8);
     int expected_second = (first_part < 5);
     int got_second = 0;
     while (got_second < 4) {
-	if (expected_second == !! (PIN_RADIO & (1 << BIT_RADIO))) {
+	if (expected_second && (PIN_RADIO & (1 << BIT_RADIO)) ||
+	    !expected_second && ((PIN_RADIO & (1 << BIT_RADIO)) == 0)) {
 	    got_second++;
 	} else {
 	    got_second = 0;
