@@ -11,4 +11,4 @@ if [ "$1" == "receiver" ]; then
   arch=atmega16
 fi
 
-sudo avrdude -c bsd -p $arch -U flash:w:$name.hex
+sudo avrdude -c bsd -p $arch -E noreset -U flash:w:$name.hex

@@ -51,11 +51,7 @@ void uart_set_baud_rate(uint32_t baudrate)
 }
 
 void uart_write_byte (uint8_t data) {
-    DDRA |= (1 << PORTA0);
-    while ( !(UCSRA & (1 << UDRE)) ) {
-	PORTA |= (1 << PORTA0);
-	PORTA &= ~(1 << PORTA0);
-    }
+    while ( !(UCSRA & (1 << UDRE)) );
     UDR = data;
 }
 
