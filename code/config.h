@@ -10,10 +10,10 @@
 #define PORT_TR PORTA
 #define BIT_TR PORTA1
 
-#define DDR_RADIO DDRA
-#define PORT_RADIO PORTA
-#define PIN_RADIO PINA
-#define BIT_RADIO PORTA7
+#define DDR_RADIO DDRB
+#define PORT_RADIO PORTB
+#define PIN_RADIO PINB
+#define BIT_RADIO PORTB2
 
 #else   // SENSOR
 
