@@ -1,6 +1,6 @@
 #include "config.h"
 
-// #include "manchester.h"
+#include "manchester.h"
 
 /* void init() { */
 /*     DDR_LED |= (1 << BIT_LED); */
