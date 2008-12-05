@@ -28,6 +28,14 @@ void manchester_send_bit(int b) {
     }
 }
 
+int current_bit() {
+    if (PIN_RADIO & (1 << BIT_RADIO)) {
+	return 1;
+    } else {
+	return 0;
+    }
+}
+
 int manchester_wait_bit() {
     // wait for large part of the half-bit
     delay_us(3*HALF_BIT/4);
@@ -36,16 +44,13 @@ int manchester_wait_bit() {
     do {
 	first_part = 0;
 	for(int i = 0; i < 10; ++i) {
-	    if (PIN_RADIO & (1 << BIT_RADIO)) {
-		first_part ++;
-	    }
+	    first_part += current_bit();
 	}
     } while (first_part > 2 && first_part < 8);
     int expected_second = (first_part < 5);
     int got_second = 0;
     while (got_second < 4) {
-	if (expected_second && (PIN_RADIO & (1 << BIT_RADIO)) ||
-	    !expected_second && ((PIN_RADIO & (1 << BIT_RADIO)) == 0)) {
+	if (expected_second == current_bit()) {
 	    got_second++;
 	} else {
 	    got_second = 0;
