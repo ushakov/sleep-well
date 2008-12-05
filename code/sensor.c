@@ -16,7 +16,7 @@ void init_adc() {
 
 void main() {
     init();
-    manchester_init();
+//    manchester_init();
     // init_adc();
     while (1) {
 /*  	ADCSRA |= 0x40; */
@@ -25,9 +25,9 @@ void main() {
 /* 	t |= ADCH << 8; */
 //	int t = 57;
 //	manchester_send(t);
-	PORT_RADIO |= (1 << BIT_RADIO);
+	PORT_LED |= (1 << BIT_LED);
 	delay_ms(1);
-	PORT_RADIO &= ~(1 << BIT_RADIO); 
+	PORT_LED &= ~(1 << BIT_LED); 
 	delay_ms(1);
     }
 }
