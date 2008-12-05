@@ -47,7 +47,7 @@ int8_t manchester_wait_bit() {
 	    first_part += current_bit();
 	}
     } while (first_part > 2 && first_part < 8);
-    int8_t expected_second = (first_part < 5) ? 0 : 1;
+    int8_t expected_second = (first_part < 5) ? 1 : 0;
     int8_t got_second = 0;
     while (got_second < 4) {
 	if (expected_second == current_bit()) {
