@@ -36,9 +36,6 @@
 void main() {
     manchester_init();
     while (1) {
-	PORT_RADIO |= (1 << BIT_RADIO);
-	delay_ms(1);
-	PORT_RADIO &= ~(1 << BIT_RADIO);
-	delay_ms(1);
+	manchester_send(0x57);
     }
 }
