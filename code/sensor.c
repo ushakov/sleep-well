@@ -2,18 +2,6 @@
 
 #include "manchester.h"
 
-/* void init() { */
-/*     DDR_LED |= (1 << BIT_LED); */
-/*     PORT_LED |= (1 << BIT_LED); */
-/* } */
-
-/* void init_adc() { */
-/*     ADMUX = 0x81; // 1000 0001, single +ADC1 */
-/*     ADCSRA = 0x86;  // 1000 0110 */
-/*     ADCSRB = 0x0; */
-/*     DIDR0 = ~0x2; // disable digital input on ADC1 */
-/* } */
-
 /* void main() { */
 /*     init(); */
 /*     manchester_init(); */
@@ -36,6 +24,10 @@
 void main() {
     manchester_init();
     while (1) {
-	manchester_send(0x57);
+	manchester_send_bit(0);
+	manchester_send_bit(1);
+	manchester_send_bit(0);
+	manchester_send_bit(1);
+	manchester_send_bit(1);
     }
 }
