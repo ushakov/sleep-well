@@ -29,5 +29,10 @@ void main() {
 	manchester_send_bit(0);
 	manchester_send_bit(1);
 	manchester_send_bit(1);
+	manchester_send_bit(1);
+	manchester_send_bit(0);
+	manchester_send_bit(1);
+	manchester_send_bit(0);
+	manchester_send_bit(0);
     }
 }
