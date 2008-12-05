@@ -9,6 +9,7 @@ static uint8_t buffer[BUFLEN];
 void main() {
     manchester_init();
     delay_s(1);
+    uart_write_byte('+');
     for (int i = 0; i < BUFLEN; ++i) {
 	buffer[i] = manchester_wait_bit();
     }
