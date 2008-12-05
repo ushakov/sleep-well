@@ -14,7 +14,7 @@ void manchester_init() {
 
 // in microseconds
 #define HALF_BIT 250
-void manchester_send_bit(int b) {
+void manchester_send_bit(int8_t b) {
     if (b) {
 	PORT_RADIO &= ~(1 << BIT_RADIO);
 	delay_us(HALF_BIT);
@@ -28,7 +28,7 @@ void manchester_send_bit(int b) {
     }
 }
 
-int current_bit() {
+int8_t current_bit() {
     if (PIN_RADIO & (1 << BIT_RADIO)) {
 	return 1;
     } else {
@@ -36,19 +36,19 @@ int current_bit() {
     }
 }
 
-int manchester_wait_bit() {
+int8_t manchester_wait_bit() {
     // wait for large part of the half-bit
     delay_us(3*HALF_BIT/4);
-    int first_part = 0;
+    int8_t first_part = 0;
     // wait until we get a good sample
     do {
 	first_part = 0;
-	for(int i = 0; i < 10; ++i) {
+	for(int8_t i = 0; i < 10; ++i) {
 	    first_part += current_bit();
 	}
     } while (first_part > 2 && first_part < 8);
-    int expected_second = (first_part < 5);
-    int got_second = 0;
+    int8_t expected_second = (first_part < 5);
+    int8_t got_second = 0;
     while (got_second < 4) {
 	if (expected_second == current_bit()) {
 	    got_second++;
