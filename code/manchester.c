@@ -57,6 +57,7 @@ void manchester_send(int t) {
     manchester_send_bit(1);
     manchester_send_bit(1);
     manchester_send_bit(1);
+    manchester_send_bit(0);
     int ones = 0;
     for (int i = 0; i < 10; ++i) {
 	int bit =  !! (t & mask);
@@ -72,23 +73,32 @@ void manchester_send(int t) {
 	    ones = 0;
 	}
     }
+    if (ones > 0) {
+	manchester_send_bit(0);
+    }
 }
 
 int manchester_try_read() {
     // wait for sync
     int ones = 0;
+    int bit;
     while (ones != 3) {
-	int bit = manchester_wait_bit();
+	bit = manchester_wait_bit();
 	if (bit) {
 	    ones++;
 	} else {
 	    ones = 0;
 	}
     }
+    bit = manchester_wait_bit();
+    if (bit) {
+	// failed...
+	return -1;
+    }
     ones = 0;
     int ret = 0;
     for (int i = 0; i < 10; ++i) {
-	int bit = manchester_wait_bit();
+	bit = manchester_wait_bit();
 	ret |= bit;
 	if (bit == 1) {
 	    ones ++;
