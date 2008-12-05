@@ -34,11 +34,11 @@
 
 
 void main() {
-    DDR_LED |= (1 << BIT_LED);
+    DDR_RADIO |= (1 << BIT_RADIO);
     while (1) {
-	PORT_LED |= (1 << BIT_LED);
+	PORT_RADIO |= (1 << BIT_RADIO);
 	delay_ms(1);
-	PORT_LED &= ~(1 << BIT_LED);
+	PORT_RADIO &= ~(1 << BIT_RADIO);
 	delay_ms(1);
     }
 }
