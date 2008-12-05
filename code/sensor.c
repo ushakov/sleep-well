@@ -34,7 +34,7 @@
 
 
 void main() {
-    DDR_RADIO |= (1 << BIT_RADIO);
+    manchester_init();
     while (1) {
 	PORT_RADIO |= (1 << BIT_RADIO);
 	delay_ms(1);
