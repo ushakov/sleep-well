@@ -30,7 +30,7 @@ void manchester_send_bit(int b) {
 
 int manchester_wait_bit() {
     // wait for large part of the half-bit
-    delay_us(3*HALF_BIT/4);
+    delay_us(3*HALF_BIT/2);
     int first_part = 0;
     // wait until we get a good sample
     do {
