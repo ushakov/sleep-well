@@ -30,7 +30,6 @@ void main() {
     manchester_init();
     uart_init();
     uart_set_baud_rate(38400);
-    delay_s(1);
     while(1) {
 	uint16_t val = manchester_read();
 	hex(val);
