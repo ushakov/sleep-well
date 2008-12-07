@@ -1,0 +1,12 @@
+*~
+*.o
+*.lst
+*.hex
+*-
+*.bak
+*.log
+*.bin
+*.eep
+*.elf
+*.map
+*.expand
