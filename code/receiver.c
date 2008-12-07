@@ -29,12 +29,13 @@ void crlf() {
 void main() {
     manchester_init();
     uart_init();
-    uart_set_baud_rate(19200);
+    uart_set_baud_rate(38400);
     delay_s(1);
-    for (int i = 0; i < BUFLEN; ++i) {
+    while(1) {
 	uint16_t val = manchester_read();
 	hex(val);
 	uart_write_byte('\r');
+	uart_write_byte('\n');
     }
     while(1);
 }
