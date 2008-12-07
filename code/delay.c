@@ -17,12 +17,16 @@ void delay_s (int s) {
     }
 }
 
+#if F_CPU != 8000000UL
+#error delay_us is tuned to 8MHz!
+#endif
 void delay_us(uint16_t us)
 {
-    uint32_t loops = (F_CPU / 1000) * us / 3000L;
-    while (loops > 250) {
-	_delay_loop_1 (250);
-	loops -= 250;
+    int16_t loops = 8 * us / 3;
+    while (loops > 256) {
+	_delay_loop_1 (0);
+	loops -= 256;
     }
     _delay_loop_1 ((uint8_t) loops);
 }
+

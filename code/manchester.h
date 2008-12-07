@@ -4,8 +4,8 @@
 #include <inttypes.h>
 
 void manchester_init();
-void manchester_send(int t);
-int manchester_read();
+void manchester_send(uint16_t t);
+uint16_t manchester_read();
 
 // low level, for debug
 int8_t manchester_wait_bit();

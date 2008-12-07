@@ -7,15 +7,18 @@ RM	= rm -f
 RN	= mv
 CP	= cp
 OBJCOPY	= avr-objcopy
+OBJDUMP	= avr-objdump
 SIZE	= avr-size
 INCDIR	= .
 FORMAT = ihex	
 
-SENSOR_CPFLAGS += -mmcu=attiny44 -DF_CPU=8000000UL -DSENSOR
-SENSOR_ASFLAGS += -mmcu=attiny44 -DF_CPU=8000000UL
+SENSOR_MCU=attiny44
+SENSOR_CPFLAGS += -mmcu=$(SENSOR_MCU) -DF_CPU=8000000UL -DSENSOR
+SENSOR_ASFLAGS += -mmcu=$(SENSOR_MCU) -DF_CPU=8000000UL
 
-RECEIVER_CPFLAGS += -mmcu=atmega16 -DF_CPU=8000000UL
-RECEIVER_ASFLAGS += -mmcu=atmega16 -DF_CPU=8000000UL
+RECEIVER_MCU=atmega16
+RECEIVER_CPFLAGS += -mmcu=$(RECEIVER_MCU) -DF_CPU=8000000UL
+RECEIVER_ASFLAGS += -mmcu=$(RECEIVER_MCU) -DF_CPU=8000000UL
 
 %.o : %.c 
 	$(CC) -c $(CPFLAGS) -I$(INCDIR) $< -o $@
@@ -38,6 +41,9 @@ RECEIVER_ASFLAGS += -mmcu=atmega16 -DF_CPU=8000000UL
 %.eep: %.elf
 	$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 -O $(FORMAT) $< $@
 
+%.dmp: %.elf
+	$(OBJDUMP) -h -S $< > $@
+
 #################################################################
 # Description of source files starts here
 
@@ -48,17 +54,19 @@ default: all
 
 all: $(TARGETS)
 
+sensor: MCU = $(SENSOR_MCU)
 sensor: CPFLAGS += $(SENSOR_CPFLAGS)
 sensor: ASFLAGS += $(SENSOR_ASFLAGS)
 sensor.elf: sensor.o delay.o manchester.o
 
+receiver: MCU = $(RECEIVER_MCU)
 receiver: CPFLAGS += $(RECEIVER_CPFLAGS)
 receiver: ASFLAGS += $(RECEIVER_ASFLAGS)
 receiver.elf: receiver.o delay.o manchester.o uart.o
 
-$(TARGETS): %: %.elf %.bin %.hex %.eep
+$(TARGETS): %: %.elf %.bin %.hex %.eep %.dmp
 	$(SIZE) $*.elf
-	-git commit -e -a -uno
+#	-git commit -e -a -uno
 	@echo $< done
 
 clean:
