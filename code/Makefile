@@ -50,9 +50,8 @@ RECEIVER_ASFLAGS += -mmcu=$(RECEIVER_MCU) -DF_CPU=8000000UL
 TARGETS = sensor receiver
 ALL_SRC = sensor.c uart.c delay.c manchester.c receiver.c
 
-default: all
-
-all: $(TARGETS)
+default:
+	echo "no default here"
 
 sensor: MCU = $(SENSOR_MCU)
 sensor: CPFLAGS += $(SENSOR_CPFLAGS)
@@ -64,10 +63,14 @@ receiver: CPFLAGS += $(RECEIVER_CPFLAGS)
 receiver: ASFLAGS += $(RECEIVER_ASFLAGS)
 receiver.elf: receiver.o delay.o manchester.o uart.o
 
-$(TARGETS): %: %.elf %.bin %.hex %.eep %.dmp
+$(TARGETS:%=%-build): %-build: clean %.elf %.bin %.hex %.eep %.dmp
 	$(SIZE) $*.elf
 #	-git commit -e -a -uno
 	@echo $< done
+
+$(TARGETS): %: %-build
+	./upload.sh $*
+
 
 clean:
 	$(RM) $(ALL_SRC:.c=.o)
