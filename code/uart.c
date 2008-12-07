@@ -19,9 +19,21 @@ ISR(USART_RXC_vect) {
     sei();
 }
 
+static uint8_t tbuf[BUFLEN];
+static uint8_t volatile tbstart;
+static uint8_t volatile tblen;
+ISR(USART_TXC_vect) {
+    tbstart = (tbstart + 1) & BUFLENMASK;
+    tblen -= 1;
+    if (tblen > 0) {
+	UDR = tbuf[tbstart];
+    }
+    sei();
+}
+
 void uart_init() {
     UCSRA = 0; //(1 << U2X);
-    UCSRB = (1 << RXEN ) | (1 << TXEN) | (1 << RXCIE);
+    UCSRB = (1 << RXEN ) | (1 << TXEN) | (1 << RXCIE) | (1 << TXCIE);
     UCSRC = (1 << URSEL) | (1 << UCSZ1) | (1 << UCSZ0); // | (1 << UPM1) | (1 << UPM0) 
     UBRRH = 0;
     UBRRL = 25;
@@ -51,9 +63,21 @@ void uart_set_baud_rate(uint32_t baudrate)
 }
 
 void uart_write_byte (uint8_t data) {
-    while ( !(UCSRA & (1 << UDRE)) );
-    UDR = data;
+    while (tblen == BUFLEN);
+    cli();
+    int t = (tbstart + tblen) & BUFLENMASK;
+    tbuf[t] = data;
+    if(tblen == 0) {
+	UDR = data;
+    }
+    tblen++;
+    sei();
 }
+
+/* void uart_write_byte (uint8_t data) { */
+/*     while ( !(UCSRA & (1 << UDRE)) ); */
+/*     UDR = data; */
+/* } */
 
 int16_t uart_getchar()
 {
