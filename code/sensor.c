@@ -3,7 +3,7 @@
 #include "manchester.h"
 
 void init() {
-    DDR_LED |= (1 << BIT_LED);
+    DDR_LED |= _BV(BIT_LED);
 }
 
 void init_adc() {
@@ -18,6 +18,7 @@ void main() {
     manchester_init();
     init_adc();
     delay_s(1);
+    PORT_LED &= ~_BV(BIT_LED);
     while(1) {
  	ADCSRA |= 0x40;
 	while (ADCSRA & 0x40);

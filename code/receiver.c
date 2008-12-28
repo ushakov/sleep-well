@@ -33,8 +33,7 @@ void main() {
     while(1) {
 	uint16_t val = manchester_read();
 	hex(val);
-	uart_write_byte('\r');
-	uart_write_byte('\n');
+	crlf();
     }
     while(1);
 }

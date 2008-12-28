@@ -14,10 +14,6 @@ Serial myPort;  // Create object from Serial class
 void setup() 
 {
   size(1000, 600);
-  // I know that the first port in the serial list on my mac
-  // is always my  FTDI adaptor, so I open Serial.list()[0].
-  // On Windows machines, this generally opens COM1.
-  // Open whatever port is the one you're using.
   String portName = Serial.list()[0];
   myPort = new Serial(this, portName, 38400);
   stroke(255);
@@ -48,7 +44,7 @@ int readNum() {
     if (k >= '0' && k <= '9') {
       t += k - '0';
     } else {
-      t += k - 'a';
+      t += k - 'a' + 10;
     }
   }
   
