@@ -1,0 +1,4 @@
+schematics accel.sch
+board accel.pcb
+
+m4-file packages/lis3lv02.m4
