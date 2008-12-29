@@ -62,13 +62,15 @@ void putRevHex(uint32_t number) {
     }
 }
 
+#endif
+
 void putRam(const char* str) {
     register char c;
     while((c = *str++)) {
 	uart_write_byte(c);
     }
 }
-#endif
+
 void putHexF(uint32_t number, uint8_t field) {
     register uint32_t highest = 1;
     register uint8_t len = 1;

@@ -14,6 +14,9 @@ fi
 if [ "$1" == "accmain" ]; then
   arch=atmega8
 fi
+if [ "$1" == "sdmain" ]; then
+  arch=atmega8
+fi
 
 if [ "z$arch" == "z" ]; then
     echo "unknown upload -- aborting"

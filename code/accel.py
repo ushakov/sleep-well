@@ -35,9 +35,9 @@ def AaddPoints(t):
     for i in range(3):
         sv = t[i]
         sq += sv*sv
-        addOnePoint(sv, i)
+        AaddOnePoint(sv, i)
     sq = math.sqrt(sq/3)
-    addOnePoint(sq, 3)
+    AaddOnePoint(sq, 3)
     pygame.display.flip()
     x = x + 1
     if x == w:
@@ -105,4 +105,4 @@ while True:
             r.append(q - 0x100000000)
         else:
             r.append(q)
-    addPoints(r)
+    AaddPoints(r)
