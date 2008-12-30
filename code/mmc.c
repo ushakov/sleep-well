@@ -14,7 +14,7 @@
 #define SPI_SCK    5
 #define SPI_MISO   4
 #define SPI_MOSI   3
-#define SPI_SS     2
+#define SPI_SS     0
 
 #define SPI_START()   SPI_PORT &= ~(1 << SPI_SS)
 #define SPI_END()     SPI_PORT |= (1 << SPI_SS)

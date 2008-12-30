@@ -1,3 +1,5 @@
+# fuses: atmega8 high=d9, low=ff
+
 ASFLAGS = -Wa, -gstabs
 CPFLAGS	= -g -Os -Wall -Wa,-ahlms=$(<:.c=.lst) -std=c99 -ffunction-sections -fdata-sections # -dr -finline-functions-called-once 
 

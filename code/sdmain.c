@@ -19,11 +19,11 @@ void main() {
     uart_init();
     uart_set_baud_rate(38400);
     mmcInit();
-    DDRD |= _BV(4);
-    PORTD &= ~_BV(4);
+//    DDRD |= _BV(4);
+//    PORTD &= ~_BV(4);
 
     putProg("SD test starting!\r\n");
-    flash_led();
+//    flash_led();
     if (mmcReset() != 0) while(1);
     for(int i = 0; i < 512; ++i) {
 	buf[i] = i % 256;
