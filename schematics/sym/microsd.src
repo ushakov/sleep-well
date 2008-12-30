@@ -54,7 +54,3 @@ numslots=0
 6		pwr	none		GND	GND
 7		io	line	l		DO
 #8		io	line	l		reserve
-11		pwr	none		GND	GND
-12		pwr	none		GND	GND
-13		pwr	none		GND	GND
-14		pwr	none		GND	GND

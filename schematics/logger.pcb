@@ -877,7 +877,7 @@ Element["onsolder" "TQFP32_7" "U1" "unknown" 105109 38968 2000 -6000 2 100 "auto
 
 	)
 
-Element["onsolder" "" "ACCEL" "" 24400 88968 -10252 21072 0 100 "auto"]
+Element["onsolder" "ACCEL" "ACCEL" "unknown" 24400 88968 -10252 21072 0 100 "auto"]
 (
 	Pad[-9841 -17717 9844 -17717 4000 2000 6000 "CS" "6" "onsolder"]
 	Pad[-9841 -11811 9844 -11811 4000 2000 6000 "SCK" "5" "onsolder"]
