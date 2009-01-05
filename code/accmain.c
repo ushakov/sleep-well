@@ -1,31 +1,21 @@
 #include <avr/io.h>
 #include <inttypes.h>
 
-#include "eeprom.h"
 #include "accel.h"
+#include "mmc.h"
 #include "delay.h"
 #include "uart.h"
 #include "put.h"
 
 uint8_t buf[64];
 
-void flash_led() {
-    PORTD |= _BV(4);
-    delay_ms(200);
-    PORTD &= ~_BV(4);
-    delay_ms(200);
-}
-
 void main() {
+    mmcInit();
     accel_init();
-    DDRD |= _BV(4);
-    PORTD &= ~_BV(4);
     uart_init();
     uart_set_baud_rate(38400);
 
     putProg("Accel starting!\r\n");
-    flash_led();
-//    accel_write(0x20, 0xe7);
     accel_write(0x20, 0xc7);
     delay_s(2);
     while(1) {
