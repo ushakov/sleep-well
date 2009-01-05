@@ -5,6 +5,8 @@
 #ifndef MMC_H
 #define MMC_H
 
+#include <inttypes.h>
+
 // constants/macros/typdefs
 // MMC commands (taken from sandisk MMC reference)
 #define MMC_GO_IDLE_STATE			0		///< initialize card to SPI-type access

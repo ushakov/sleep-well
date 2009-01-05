@@ -49,8 +49,10 @@ RECEIVER_ASFLAGS += -mmcu=$(RECEIVER_MCU) -DF_CPU=8000000UL
 #################################################################
 # Description of source files starts here
 
-TARGETS = sensor receiver accmain sdmain
-ALL_SRC = sensor.c uart.c put.c delay.c manchester.c receiver.c accmain.c accel.c eeprom.c sdmain.c mmc.c
+TARGETS = sensor receiver accmain sdmain logger
+ALL_SRC = sensor.c uart.c put.c delay.c manchester.c receiver.c \
+          accmain.c accel.c eeprom.c sdmain.c mmc.c \
+          time.c logger.c
 
 default:
 	echo "no default here"
@@ -74,6 +76,11 @@ sdmain.elf: MCU = atmega8
 sdmain.elf: CPFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
 sdmain.elf: ASFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
 sdmain.elf: sdmain.o delay.o uart.o put.o mmc.o
+
+logger.elf: MCU = atmega8
+logger.elf: CPFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
+logger.elf: ASFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
+logger.elf: logger.o delay.o uart.o put.o mmc.o accel.o time.o eeprom.o
 
 $(TARGETS:%=%-build): %-build: clean %.elf %.bin %.hex %.eep %.dmp
 	$(SIZE) $*.elf

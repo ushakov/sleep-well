@@ -48,9 +48,9 @@ void mmcInit() {
     
     /* Enable SPI, Master, set clock rate f/2 */
     SPCR = (1 << SPE) | (1 << MSTR) | (1 << CPHA) | (1 << CPOL);
-    // f/128
-//    SPCR |= (1 << SPR1) | (1 << SPR0);
-//    SPSR = (1 << SPI2X);
+    // f/32
+    SPCR |= (1 << SPR1);
+    SPSR = (1 << SPI2X);
 
     // Set idle SCK to high
     SPI_PORT |= (1 << SPI_SCK);
