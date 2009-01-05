@@ -1,7 +1,7 @@
 # fuses: atmega8 high=d9, low=ff
 
 ASFLAGS = -Wa, -gstabs
-CPFLAGS	= -g -Os -Wall -Wa,-ahlms=$(<:.c=.lst) -std=c99 -ffunction-sections -fdata-sections # -dr -finline-functions-called-once 
+CPFLAGS	= -Os -Wall -Wa,-ahlms=$(<:.c=.lst) -std=c99 
 
 CC	= avr-gcc
 AS	= avr-gcc -x assembler-with-cpp	
@@ -70,7 +70,7 @@ receiver.elf: receiver.o delay.o manchester.o uart.o
 accmain.elf: MCU = atmega8
 accmain.elf: CPFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
 accmain.elf: ASFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
-accmain.elf: accmain.o delay.o eeprom.o accel.o uart.o put.o
+accmain.elf: accmain.o delay.o accel.o uart.o put.o mmc.o
 
 sdmain.elf: MCU = atmega8
 sdmain.elf: CPFLAGS += -mmcu=$(MCU) -DF_CPU=8000000UL
