@@ -14,10 +14,11 @@
 #define SPI_SCK    5
 #define SPI_MISO   4
 #define SPI_MOSI   3
-#define SPI_SS     0
+#define SPI_SS     2
+#define MMC_CS     0
 
-#define SPI_START()   SPI_PORT &= ~(1 << SPI_SS)
-#define SPI_END()     SPI_PORT |= (1 << SPI_SS)
+#define SPI_START()   SPI_PORT &= ~(1 << MMC_CS)
+#define SPI_END()     SPI_PORT |= (1 << MMC_CS)
 
 
 #define MMC_DEBUG 1
@@ -38,23 +39,29 @@ void debug_print(const char *s, uint16_t x) {
 static uint8_t spiTransferByte(uint8_t b)
 {
     SPDR = b;
-    while(!(SPSR & (1 << SPIF)));
+    int16_t count = 0;
+    while(!(SPSR & (1 << SPIF))) {
+	if (++count > 1024) {
+	    #ifdef MMC_DEBUG
+	    rprintf("can't send spi for # f cycles: 0x", count);
+	    #endif
+	    return 0xff;
+	}
+    }
     return SPDR;
 }
 
 void mmcInit() {
-    SPI_DDR |= (1 << SPI_MOSI) | (1 << SPI_SCK) | (1 << SPI_SS);
+    SPI_DDR |= (1 << SPI_MOSI) | (1 << SPI_SCK) | (1 << SPI_SS) | (1 << MMC_CS);
     SPI_DDR &= ~(1 << SPI_MISO);
     
-    /* Enable SPI, Master, set clock rate f/2 */
-    SPCR = (1 << SPE) | (1 << MSTR) | (1 << CPHA) | (1 << CPOL);
-    // f/32
-    SPCR |= (1 << SPR1);
+    /* Enable SPI, Master, set clock rate f/32 */
+    SPCR = (1 << SPE) | (1 << MSTR) | (1 << CPHA) | (1 << CPOL) | (1 << SPR1);
     SPSR = (1 << SPI2X);
 
     // Set idle SCK to high
     SPI_PORT |= (1 << SPI_SCK);
-    SPI_PORT |= (1 << SPI_SS);
+    SPI_PORT |= (1 << MMC_CS);
 }
 
 uint8_t mmcReset(void)
