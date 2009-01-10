@@ -21,7 +21,7 @@
 #define SPI_END()     SPI_PORT |= (1 << MMC_CS)
 
 
-#define MMC_DEBUG 1
+// #define MMC_DEBUG 1
 
 #ifdef MMC_DEBUG
 #include <avr/pgmspace.h>
@@ -144,8 +144,10 @@ uint8_t mmcRead(uint32_t sector, uint8_t* buffer)
 	rprintf("MMC Read Block R1=0x", r1);
 	#endif
 	// check for valid response
-	if(r1 != 0x00)
-		return r1;
+	if(r1 != 0x00) {
+	    SPI_END();
+	    return r1;
+	}
 	// wait for block start
 	while(spiTransferByte(0xFF) != MMC_STARTBLOCK_READ);
 	// read in data
@@ -175,8 +177,10 @@ uint8_t mmcWrite(uint32_t sector, uint8_t* buffer)
 	rprintf("MMC Write Block R1=0x", r1);
 	#endif
 	// check for valid response
-	if(r1 != 0x00)
-		return r1;
+	if(r1 != 0x00) {
+	    SPI_END();
+	    return r1;
+	}
 	// send dummy
 	spiTransferByte(0xFF);
 	// send data start token
@@ -191,8 +195,10 @@ uint8_t mmcWrite(uint32_t sector, uint8_t* buffer)
 	spiTransferByte(0xFF);
 	// read data response token
 	r1 = spiTransferByte(0xFF);
-	if( (r1&MMC_DR_MASK) != MMC_DR_ACCEPT)
-		return r1;
+	if( (r1&MMC_DR_MASK) != MMC_DR_ACCEPT) {
+	    SPI_END();
+	    return r1;
+	}
 	#ifdef MMC_DEBUG
 	rprintf("Data Response Token=0x", r1);
 	#endif
