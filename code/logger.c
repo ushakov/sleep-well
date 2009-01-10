@@ -4,6 +4,7 @@
 #include "put.h"
 #include "time.h"
 #include "eeprom.h"
+#include "delay.h"
 
 uint8_t buf[512];
 uint16_t blen;
@@ -36,6 +37,86 @@ static void dump_buffer() {
     mmcWrite(sector++, buf);
 }
 
+static int16_t get_num() {
+    uint16_t n = 0;
+    int16_t c;
+    putCRLF(); putChar('#');
+    do {
+	while((c = uart_getchar()) == -1);
+	if (c == '\r') return n;
+	if (c >= '0' && c <= '9') {
+	    n *= 10;
+	    n += c - '0';
+	} else {
+	    putChar('?'); putCRLF();
+	    n = 0;
+	}
+    } while (1);
+}
+
+static void dump_some_mem() {
+    for (uint32_t s = 0; s < 100; ++s) {
+	int8_t r1 = mmcRead(s, buf);
+	if (r1 != 0) {
+	    putProg("Bad read sector=0x");
+	    putHexF(s, 2);
+	    putProg(" res=0x");
+	    putHexF(r1, 2);
+	    putCRLF();
+	    break;
+	}
+	for (int16_t i = 0; i < 512; ++i) {
+	    putHexF(buf[i], 2);
+	    if(i % 16 == 15) {
+		putCRLF();
+	    } else {
+		putChar(' ');
+	    }
+	}
+	putCRLF();
+    }
+}
+
+static void monitor() {
+    putProg("Welcome to Monitor!\r\n");
+    while(1) {
+	putChar('>');
+	int16_t c;
+	while ((c = uart_getchar()) == -1) ;
+	switch(c) {
+	case 't':  // get time
+	    putHexF(time_get(), 0);
+	    putCRLF();
+	    break;
+	case 'd':  // Dump all
+	    for (uint32_t s = 0; s < sector; ++s) {
+		int8_t r1 = mmcRead(s, buf);
+		if (r1 != 0) {
+		    putProg("Bad read sector=0x");
+		    putHexF(s, 2);
+		    putProg(" res=0x");
+		    putHexF(r1, 2);
+		    putCRLF();
+		    break;
+		}
+		for (int16_t i = 0; i < 512; ++i) {
+		    putHexF(buf[i], 2);
+		    if(i % 16 == 15) {
+			putCRLF();
+		    } else {
+			putChar(' ');
+		    }
+		}
+		putCRLF();
+	    }
+	    break;
+	default:
+	    putChar('?');
+	    putCRLF();
+	}
+    }
+}
+
 void main() {
     time_init();
     time_set(0);
@@ -62,12 +143,17 @@ void main() {
 	}
     }
 
+//    dump_some_mem(); while(1);
+    
     write_header();
     int16_t min, max;
-    // putProg("1\r\n");
     while(1) {
+	if (uart_getchar() != -1) {
+	    putProg("-->\r\n");
+	    monitor();
+	}
 	if (blen == 512) {
-	    putProg("dumping:\r\nSector=");
+	    putProg("dumping: sector=");
 	    putHexF(sector,0);
 	    putProg(" seq=");
 	    putHexF(seq,0);
@@ -80,11 +166,7 @@ void main() {
 	    dump_buffer();
 	    write_header();
 	}
-	// putProg("2\r\n");
 	int16_t acc = accel_get_overall();
-	// putProg("3: ");
-	// putHexF(acc,2);
-	// putCRLF();
 	if (acc >= 0) {
 	    if (blen == 8) {
 		max = acc;
@@ -95,11 +177,6 @@ void main() {
 	    }
 	    buf[blen++] = acc & 0xff;
 	    buf[blen++] = (acc >> 8) & 0xff;
-	    if (0) {
-		putProg("CP: blen=0x");
-		putHexF(blen,2);
-		putCRLF();
-	    }
 	} else {
 	    if (acc == -2) {
 		putProg("bad device\r\n");
