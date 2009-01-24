@@ -12,6 +12,18 @@ uint32_t sector;
 
 uint8_t seq;
 
+static void led_init() {
+    DDRC |= _BV(2);
+}
+
+static void led_on() {
+    PORTC |= _BV(2);
+}
+
+static void led_off() {
+    PORTC &= ~_BV(2);
+}
+
 static void write_header() {
     blen = 0;
 
@@ -34,24 +46,16 @@ static void write_header() {
 }
 
 static void dump_buffer() {
-    mmcWrite(sector++, buf);
-}
-
-static int16_t get_num() {
-    uint16_t n = 0;
-    int16_t c;
-    putCRLF(); putChar('#');
-    do {
-	while((c = uart_getchar()) == -1);
-	if (c == '\r') return n;
-	if (c >= '0' && c <= '9') {
-	    n *= 10;
-	    n += c - '0';
-	} else {
-	    putChar('?'); putCRLF();
-	    n = 0;
+    uint8_t r = mmcWrite(sector++, buf);
+    if (r == 0) {
+	while(1) {
+	    led_on();
+	    delay_ms(200);
+	    led_off();
+	    delay_ms(100);
 	}
-    } while (1);
+	while(1);
+    }
 }
 
 static void dump_some_mem() {
@@ -77,54 +81,22 @@ static void dump_some_mem() {
     }
 }
 
-static void monitor() {
-    putProg("Welcome to Monitor!\r\n");
-    while(1) {
-	putChar('>');
-	int16_t c;
-	while ((c = uart_getchar()) == -1) ;
-	switch(c) {
-	case 't':  // get time
-	    putHexF(time_get(), 0);
-	    putCRLF();
-	    break;
-	case 'd':  // Dump all
-	    for (uint32_t s = 0; s < sector; ++s) {
-		int8_t r1 = mmcRead(s, buf);
-		if (r1 != 0) {
-		    putProg("Bad read sector=0x");
-		    putHexF(s, 2);
-		    putProg(" res=0x");
-		    putHexF(r1, 2);
-		    putCRLF();
-		    break;
-		}
-		for (int16_t i = 0; i < 512; ++i) {
-		    putHexF(buf[i], 2);
-		    if(i % 16 == 15) {
-			putCRLF();
-		    } else {
-			putChar(' ');
-		    }
-		}
-		putCRLF();
-	    }
-	    break;
-	default:
-	    putChar('?');
-	    putCRLF();
-	}
-    }
-}
-
 void main() {
+    DDRB = 0xff;
+    DDRC = 0xff;
+    DDRD = 0xff;
+    PORTB = 0;
+    PORTC = 0;
+    PORTD = 0;
     time_init();
     time_set(0);
     mmcInit();
     accel_init();
     accel_set_param();
-    uart_init();
-    uart_set_baud_rate(38400);
+//    uart_init();
+//    uart_set_baud_rate(38400);
+    led_init();
+    led_on();
 
     sector = 0;
     blen = 0;
@@ -134,25 +106,24 @@ void main() {
 
     eeprom_write(0, seq);
 
-    putProg("Welcome to logger!\r\n");
+//    putProg("Welcome to logger!\r\n");
     if (mmcReset() != 0) {
 	delay_s(1);
-	putProg("retrying...");
+//	putProg("retrying...");
 	if (mmcReset() != 0) {
-	    putProg("bad luck");
+//	    putProg("bad luck");
+	    while(1);
 	}
     }
+    led_off();
 
 //    dump_some_mem(); while(1);
     
     write_header();
     int16_t min, max;
     while(1) {
-	if (uart_getchar() != -1) {
-	    putProg("-->\r\n");
-	    monitor();
-	}
 	if (blen == 512) {
+#ifdef UART_DUMP
 	    putProg("dumping: sector=");
 	    putHexF(sector,0);
 	    putProg(" seq=");
@@ -162,9 +133,14 @@ void main() {
 	    putProg(" max=");
 	    putHexF(max,0);
 	    putCRLF();
+#endif  // UART_DUMP
 
 	    dump_buffer();
 	    write_header();
+	    led_on();
+	}
+	if (blen == 28) {
+	    led_off();
 	}
 	int16_t acc = accel_get_overall();
 	if (acc >= 0) {
@@ -178,6 +154,11 @@ void main() {
 	    buf[blen++] = acc & 0xff;
 	    buf[blen++] = (acc >> 8) & 0xff;
 	} else {
+	    led_on();
+	    delay_ms(100);
+	    led_off();
+	    delay_ms(100);
+#ifdef UART_DUMP
 	    if (acc == -2) {
 		putProg("bad device\r\n");
 	    } else if (acc == -1) {
@@ -187,6 +168,7 @@ void main() {
 		putHexF(acc,2);
 		putCRLF();
 	    }
+#endif  // UART_DUMP
 	}
     }
 }
