@@ -47,7 +47,7 @@ static void write_header() {
 
 static void dump_buffer() {
     uint8_t r = mmcWrite(sector++, buf);
-    if (r == 0) {
+    if (r != 0) {
 	while(1) {
 	    led_on();
 	    delay_ms(200);
