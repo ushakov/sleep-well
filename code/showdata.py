@@ -9,24 +9,42 @@ def Ginit(w, h):
     pygame.font.init()
     return pygame.display.set_mode((w,h))
 
+class Data:
+    def __init__(self, data):
+        self.d = []
+        self.times = []
+        n = 0
+        for d in data:
+            self.times += [(n, d['timestamp'])]
+            self.d += d['data']
+            n += len(d['data'])
+
+    def data(self, k):
+        return self.d[k]
+
+    def datalen(self):
+        return len(self.d)
+
+    def times(self, k):
+        return self.times[k]
+
+    def itertimes(self):
+        return self.times.__iter__()
+
+    def timeslen(self):
+        return len(self.times)
+
 class DataViewer:
     def __init__(self, screen, data, timeshift):
         self.w = screen.get_width()
         self.h = screen.get_height()
         self.screen = screen
-        self.data = []
-        self.times = []
-        n = 0
-        for d in data:
-            self.times += [(n, d['timestamp'])]
-            self.data += d['data']
-            n += len(d['data'])
-        self.scale = len(self.data) * 1.0 / self.w
-        self.max_scale = len(self.data) * 1.0 / self.w
         self.timeshift = timeshift
         self.x0 = 0
-
         self.font = pygame.font.Font(None, 12)
+        self.d = Data(data)
+        self.scale = self.d.datalen() * 1.0 / self.w
+        self.max_scale = self.d.datalen() * 1.0 / self.w
 
     def set_scale(self, scale, x):
         if scale < .125:
@@ -47,8 +65,8 @@ class DataViewer:
     def set_x0(self, x0):
         if x0 < 0:
             x0 = 0
-        if x0 + self.w * self.scale > len(self.data):
-            x0 = len(self.data) - (self.scale * self.w)
+        if x0 + self.w * self.scale > self.d.datalen():
+            x0 = self.d.datalen() - (self.scale * self.w)
         self.x0 = x0
 
     def shift_view(self, dx):
@@ -60,10 +78,10 @@ class DataViewer:
             low = int(x * self.scale + self.x0)
             high = int((x + 1) * self.scale + self.x0)
             if high <= low: high = low+1
-            inrange = [ (self.data[i] * self.h / 2048) for i in range(low, high)]
+            inrange = [ (self.d.data(i) * self.h / 2048) for i in range(low, high)]
             pygame.draw.line(self.screen, (0,255,0), (x,min(inrange)), (x, max(inrange)), 1)
         min_x = -1
-        for t in self.times:
+        for t in self.d.itertimes():
             x = (t[0] - self.x0) / self.scale
             if x >= 0 and x <= self.w:
                 pygame.draw.line(self.screen, (128,128,128), (x, self.h), (x, self.h-10), 1)
@@ -83,18 +101,6 @@ class DataViewer:
         pygame.draw.line(screen, (0,0,255), (0,self.h/2), (self.w, self.h/2), 1)
         pygame.display.flip()
         
-def show_data(data):
-    Ginit()
-    all = [ s for b in data for s in b['data'] ]
-    N = len(all)
-    for x in range(w):
-        low = int(1.0 * x * N / w)
-        high = int(1.0 * (x+1) * N / w)
-        inrange = [ (all[i] * h / 2048) for i in range(low, high)]
-        pygame.draw.line(screen, (0,255,0), (x,min(inrange)), (x, max(inrange)), 1)
-    pygame.draw.line(screen, (0,0,255), (0,h/2), (w, h/2), 1)
-    pygame.display.flip()
-
 def handle_event(ev):
     if ev.type == QUIT:
         sys.exit()
